@@ -46,3 +46,12 @@
 5. **رفع أول إعلان** أو السماح للمدير بتغيير إعدادات المنصة حتى يُنشأ مستند `settings/platform` (كتابة الإعدادات للمدير فقط حسب القواعد).
 6. **حساب المدير الأساسي:** `bayssahmr@gmail.com` — عند أول تسجيل دخول به يُمنح دور `OWNER` تلقائياً (كوداً وقواعداً).
 7. **ملاحظة عن بيانات الاختبار:** لا تُنشأ أي بيانات وهمية تلقائياً في قاعدة البيانات الفارغة؛ الإعلانات التجريبية موجودة فقط كمرجع في `src/data/initialData.ts` ولا تُستخدم في الإنتاج.
+
+## ملاحظة عن نشر ملف الـ Workflow
+
+ملف `.github/workflows/deploy-gh-pages.yml` (الجديد) موجود في الـ working tree، وملف `jekyll-gh-pages.yml` القديم محذوف محلياً — لكن لا يمكن دفعهما من بيئة هذه الجلسة لأن الـ GitHub App لا يملك صلاحية `workflows`. لتفعيل النشر التلقائي على GitHub Pages:
+
+- من GitHub: Settings ← Integrations/Applications ← امنح التطبيق صلاحية `Workflows` (أو ادفع الفرع من جهازك)، أو
+- أضف ملف `.github/workflows/deploy-gh-pages.yml` يدوياً من واجهة GitHub (Add file) واحذف `jekyll-gh-pages.yml`.
+
+بدونه سيظل الـ workflow القديم (Jekyll) هو النشط ولا يبني التطبيق.
