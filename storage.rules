@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function admin() {
+      return signedIn() && (
+        request.auth.token.email == 'bayssahmr@gmail.com' ||
+        (exists(/databases/ai-studio-remixsouqelaouin-0fe7cd01-2dfb-4c4f-9cda-d85ec4a013a9/documents/users/$(request.auth.uid)) &&
+         get(/databases/ai-studio-remixsouqelaouin-0fe7cd01-2dfb-4c4f-9cda-d85ec4a013a9/documents/users/$(request.auth.uid)).data.role in ['OWNER','SUPER_ADMIN','ADMIN'])
+      );
+    }
+    match /listings/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == uid;
+      allow delete: if signedIn() && request.auth.uid == uid || admin();
+    }
+    match /platform/{folder}/{fileName} {
+      allow read: if true;
+      allow write, delete: if admin();
+    }
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if admin();
+    }
+  }
+}

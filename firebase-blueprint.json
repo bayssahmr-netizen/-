@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "user": {
+      "title": "UserProfile",
+      "description": "User profile and role management",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "role": { "type": "string", "enum": ["USER", "MODERATOR", "ADMIN", "SUPER_ADMIN", "OWNER"] },
+        "status": { "type": "string", "enum": ["ACTIVE", "SUSPENDED", "BANNED"] },
+        "avatar": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "role", "status"]
+    },
+    "listing": {
+      "title": "ListingItem",
+      "description": "Marketplace listing or post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "priceFormatted": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "subcategoryId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "ownerPhone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "location": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "PENDING", "PAUSED", "CLOSED", "SOLD", "REJECTED"] },
+        "images": { "type": "array" },
+        "isFeatured": { "type": "boolean" },
+        "views": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "categoryId", "ownerId", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/user" },
+      "description": "User profile collection"
+    },
+    "/listings/{listingId}": {
+      "schema": { "$ref": "#/entities/listing" },
+      "description": "Marketplace listings collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": "CategoryItem",
+      "description": "Marketplace categories"
+    },
+    "/settings/{settingId}": {
+      "schema": "PlatformSettings",
+      "description": "Platform global settings"
+    },
+    "/pages/{pageId}": {
+      "schema": "CMSPage",
+      "description": "CMS dynamic pages"
+    },
+    "/reports/{reportId}": {
+      "schema": "ReportItem",
+      "description": "Listing reports"
+    },
+    "/adminLogs/{logId}": {
+      "schema": "AdminLog",
+      "description": "Admin audit logs"
+    },
+    "/sellers/{sellerId}": {
+      "schema": "SellerProfile",
+      "description": "Sellers and merchants"
+    },
+    "/orders/{orderId}": {
+      "schema": "OrderItem",
+      "description": "E-commerce orders"
+    },
+    "/deliveryRates/{rateId}": {
+      "schema": "DeliveryRate",
+      "description": "Delivery pricing per municipality"
+    },
+    "/referrals/{refId}": {
+      "schema": "ReferralItem",
+      "description": "Affiliate referrals"
+    },
+    "/payments/{paymentId}": {
+      "schema": "PaymentItem",
+      "description": "Payment records"
+    },
+    "/banners/{bannerId}": {
+      "schema": "BannerItem",
+      "description": "Advertisement banners"
+    }
+  }
+}

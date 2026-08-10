@@ -1,0 +1,137 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdminRole() {
+      return isSignedIn() && 
+        (
+          request.auth.token.email == "bayssahmr@gmail.com" ||
+          (
+            exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+            getUserData().role in ['OWNER', 'SUPER_ADMIN', 'ADMIN']
+          )
+        );
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == userId && (request.resource.data.role == 'USER' || request.auth.token.email == 'bayssahmr@gmail.com');
+      // A normal user may update their own profile, but can NEVER change
+      // their own role nor their own status.
+      allow update: if isAdminRole() || (
+        isSignedIn() &&
+        request.auth.uid == userId &&
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.status == resource.data.status
+      );
+      allow delete: if isAdminRole();
+    }
+
+    // Listings Collection
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isAdminRole() || (isSignedIn() && resource.data.ownerId == request.auth.uid && request.resource.data.ownerId == resource.data.ownerId);
+      allow delete: if isAdminRole() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+    }
+
+    // Categories Collection
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdminRole();
+    }
+
+    // Settings Collection (Platform Customization)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdminRole();
+    }
+
+    // Banners Collection
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdminRole();
+    }
+
+    // Sellers / Stores Collection
+    match /sellers/{sellerId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isAdminRole() || (isSignedIn() && resource.data.ownerId == request.auth.uid && request.resource.data.ownerId == resource.data.ownerId);
+      allow delete: if isAdminRole() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (
+        resource.data.buyerId == request.auth.uid || 
+        resource.data.sellerId == request.auth.uid || 
+        isAdminRole()
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.buyerId == request.auth.uid || 
+        resource.data.sellerId == request.auth.uid || 
+        isAdminRole()
+      );
+      allow delete: if isAdminRole();
+    }
+
+    // Reports Collection
+    match /reports/{reportId} {
+      allow read: if isAdminRole();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdminRole();
+    }
+
+    // Admin Logs
+    match /adminLogs/{logId} {
+      allow read, write: if isAdminRole();
+    }
+
+    // Referrals / Affiliate Marketing Collection
+    match /referrals/{refId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdminRole());
+      allow create: if isSignedIn();
+      allow update, delete: if isAdminRole();
+    }
+
+    // Delivery Rates
+    match /deliveryRates/{rateId} {
+      allow read: if true;
+      allow write: if isAdminRole();
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdminRole());
+      allow create: if isSignedIn();
+      allow update, delete: if isAdminRole();
+    }
+
+    // Dynamic Pages (CMS)
+    match /pages/{pageId} {
+      allow read: if true;
+      allow write: if isAdminRole();
+    }
+  }
+}

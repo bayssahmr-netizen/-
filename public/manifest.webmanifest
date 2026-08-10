@@ -1,0 +1,26 @@
+{
+  "name": "سوق لعوينات العملاق - Souq El Aouinet Giant",
+  "short_name": "سوق لعوينات",
+  "description": "أول منصة إعلانات مبوبة محلية مخصصة لسكان العوينات وولاية تبسة.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#ea580c",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
