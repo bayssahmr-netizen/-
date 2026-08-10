@@ -1,0 +1,6 @@
+{
+  "name": "سوق لعوينات العملاق - Souq El Aouinet Giant",
+  "description": "منصة سوق لعوينات العملاق الشاملة للإعلانات المبوبة والخدمات والوظائف والمتاجر والمفقودات بتبسة - الجزائر",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
